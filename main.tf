@@ -1,52 +1,48 @@
 provider "azurerm" {
   features {}
 }
-
-#create Resource Group
-resource "azurerm_resource_group" "terraform-project" {
-  name     = "terraform-project"
+#Create Resource Group
+resource "azurerm_resource_group" "rg" {
+  name     = "teffaform-project"
   location = "eastus"
 }
-
-#Create Virtual Network 
-resource "azurerm_virtual_network" "terraform-vnet" {
-  name                = "terraform-vnet"
+#Create virtual Network
+resource "azurerm_virtual_network" "vnet" {
+  name                = "terraform-network"
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.terraform-project.location
-  resource_group_name = azurerm_resource_group.terraform-project.name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 }
 
-#Create Subnet to hold the VM 
-
-resource "azurerm_subnet" "terraform-subnet" {
-  name                 = "terraform-subnet"
-  resource_group_name  = azurerm_resource_group.terraform-project.name
-  virtual_network_name = azurerm_virtual_network.terraform-subnet.name
+#Create Subnet to hold the VM
+resource "azurerm_subnet" "sn" {
+  name                 = "VM"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.2.0/24"]
 }
-
-#create vNIC for the VM
-resource "azurerm_network_interface" "terraform-nic" {
-  name                = "terraform-nic"
-  location            = azurerm_resource_group.terraform-project.location
-  resource_group_name = azurerm_resource_group.terraform-project.name
+#Create vNIC for the VM and assign to the VM
+resource "azurerm_network_interface" "vmnic" {
+  name                = "terraformvm01-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.terraform-nic.id
+    subnet_id                     = azurerm_subnet.sn.id
     private_ip_address_allocation = "Dynamic"
   }
 }
-
-resource "azurerm_windows_virtual_machine" "terraform-machine" {
-  name                = "terraform-machine"
-  resource_group_name = azurerm_resource_group.terraform-project.name
-  location            = azurerm_resource_group.terraform-project.location
+#Create the Virtual Machine 
+resource "azurerm_windows_virtual_machine" "terraformvm01" {
+  name                = "terraformvm01"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
   size                = "Standard_F2"
   admin_username      = "adminuser"
   admin_password      = "P@$$w0rd1234!"
   network_interface_ids = [
-    azurerm_network_interface.terraform-nic.id,
+    azurerm_network_interface.vmnic.id,
   ]
 
   os_disk {

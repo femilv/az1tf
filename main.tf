@@ -28,7 +28,7 @@ resource "azurerm_subnet" "terraform-subnet" {
 #create vNIC for the VM
 resource "azurerm_network_interface" "terraform-nic" {
   name                = "terraform-nic"
-  location            = azurerm_resource_group.example.location
+  location            = azurerm_resource_group.terraform-project.location
   resource_group_name = azurerm_resource_group.terraform-project.name
 
   ip_configuration {

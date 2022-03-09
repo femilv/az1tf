@@ -33,7 +33,7 @@ resource "azurerm_network_interface" "terraform-nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.terraform-nic
+    subnet_id                     = azurerm_subnet.terraform-nic.id
     private_ip_address_allocation = "Dynamic"
   }
 }

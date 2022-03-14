@@ -3,7 +3,7 @@ provider "azurerm" {
 }
 #Create Resource Group
 resource "azurerm_resource_group" "rg" {
-  name     = "teffaform-project"
+  name     = "TestingRG"
   location = "eastus"
 }
 #Create virtual Network

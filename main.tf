@@ -1,11 +1,11 @@
 provider "azurerm" {
   features {}
-}
+#}
 #Create Resource Group
 #resource "azurerm_resource_group" "rg" {
  #name     = "TestingRG"
   #location = "eastus"
-}
+#}
 terraform import azurerm_resource_group.TestingRG /subscriptions/79ccc3a1-9cbe-40d1-8a45-5024d2b5f111/resourceGroups/TestingRG
 
 #Create virtual Network
